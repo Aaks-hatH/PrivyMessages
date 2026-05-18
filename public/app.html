@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrivyMessages</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">privy<span>messages</span></div>
+        <div class="current-user" id="currentUsername"></div>
+      </div>
+      <div class="sidebar-section">Users</div>
+      <div class="user-list" id="userList">
+        <div class="loading">loading users...</div>
+      </div>
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logout()">Sign Out</button>
+      </div>
+    </div>
+
+    <!-- Chat area -->
+    <div class="chat-area" id="chatArea">
+      <div class="no-chat" id="noChat">
+        <div class="no-chat-icon">🔒</div>
+        <p>select a user to start messaging</p>
+        <p style="font-size:10px; opacity:0.4;">messages are end-to-end encrypted</p>
+      </div>
+
+      <!-- Active chat -->
+      <div id="activeChat" style="display:none; flex:1; display:none; flex-direction:column; overflow:hidden;">
+        <div class="chat-header">
+          <div class="user-avatar" id="chatAvatar" style="width:32px;height:32px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--text-mid);text-transform:uppercase;"></div>
+          <div>
+            <div class="chat-header-name" id="chatHeaderName"></div>
+            <div class="chat-header-status" id="chatHeaderStatus">offline</div>
+          </div>
+        </div>
+        <div class="messages-container" id="messagesContainer"></div>
+        <div class="chat-input-area">
+          <textarea class="chat-input" id="chatInput" placeholder="Type a message..." rows="1" onkeydown="handleInputKey(event)"></textarea>
+          <button class="send-btn" onclick="sendMessage()" id="sendBtn">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

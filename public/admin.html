@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrivyMessages — Admin</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <div class="admin-header">
+      <div class="admin-brand">privy<span>messages</span></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span class="admin-badge">⚡ master admin</span>
+        <button class="logout-btn" onclick="logout()" style="width:auto;padding:6px 14px;">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="admin-nav">
+      <button class="admin-tab active" onclick="switchTab('users')" id="tabUsers">Users</button>
+      <button class="admin-tab" onclick="switchTab('messages')" id="tabMessages">All Messages</button>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- Users Panel -->
+      <div class="admin-panel active" id="panelUsers">
+        <div class="stat-cards" id="statsRow">
+          <div class="stat-card">
+            <div class="stat-value" id="statUsers">—</div>
+            <div class="stat-label">Total Users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statMessages">—</div>
+            <div class="stat-label">Total Messages</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-title">
+            <span>Registered Users</span>
+            <input class="search-filter" id="userSearch" placeholder="search username..." oninput="filterUsers()">
+          </div>
+          <div id="usersTableWrap">
+            <div class="loading">loading users...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Panel -->
+      <div class="admin-panel" id="panelMessages">
+        <div class="table-wrap">
+          <div class="table-title">
+            <span>All Messages <span class="lock-icon">[decrypted]</span></span>
+            <input class="search-filter" id="msgSearch" placeholder="search messages..." oninput="filterMessages()">
+          </div>
+          <div id="msgsTableWrap">
+            <div class="loading">loading messages...</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>
