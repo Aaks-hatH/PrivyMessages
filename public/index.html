@@ -10,7 +10,10 @@
   <div class="login-page">
     <div class="login-card">
       <div class="login-header">
-        <div class="login-logo">privy<span>messages</span></div>
+        <div class="login-logo">
+          <span class="login-logo-dot"></span>
+          privy<span>messages</span>
+        </div>
         <div class="login-sub">end-to-end encrypted messaging</div>
       </div>
 
@@ -23,11 +26,11 @@
       <form class="login-form active" id="loginForm" onsubmit="handleLogin(event)">
         <div class="error-msg" id="loginError"></div>
         <div class="field">
-          <label>Username</label>
+          <label for="loginUsername">Username</label>
           <input type="text" id="loginUsername" placeholder="your_username" autocomplete="username" required>
         </div>
         <div class="field">
-          <label>Password</label>
+          <label for="loginPassword">Password</label>
           <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
         </div>
         <button type="submit" class="btn btn-primary" id="loginBtn">Sign In</button>
@@ -37,11 +40,11 @@
       <form class="login-form" id="registerForm" onsubmit="handleRegister(event)">
         <div class="error-msg" id="registerError"></div>
         <div class="field">
-          <label>Username</label>
+          <label for="regUsername">Username</label>
           <input type="text" id="regUsername" placeholder="choose_a_username" minlength="3" maxlength="30" required>
         </div>
         <div class="field">
-          <label>Password</label>
+          <label for="regPassword">Password</label>
           <input type="password" id="regPassword" placeholder="min 6 characters" minlength="6" required>
         </div>
         <button type="submit" class="btn btn-primary" id="registerBtn">Create Account</button>
@@ -50,7 +53,6 @@
   </div>
 
   <script>
-    // Redirect if already logged in
     const token = localStorage.getItem('pm_token');
     const user = JSON.parse(localStorage.getItem('pm_user') || 'null');
     if (token && user) {
@@ -70,7 +72,6 @@
       err.style.display = 'none';
       btn.disabled = true;
       btn.textContent = 'Signing in...';
-
       try {
         const res = await fetch('/api/auth/login', {
           method: 'POST',
@@ -100,7 +101,6 @@
       err.style.display = 'none';
       btn.disabled = true;
       btn.textContent = 'Creating...';
-
       try {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
