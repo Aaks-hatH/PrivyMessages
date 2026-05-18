@@ -8,11 +8,15 @@
 </head>
 <body>
   <div class="admin-layout">
+
     <div class="admin-header">
-      <div class="admin-brand">privy<span>messages</span></div>
-      <div style="display:flex;align-items:center;gap:12px;">
-        <span class="admin-badge">⚡ master admin</span>
-        <button class="logout-btn" onclick="logout()" style="width:auto;padding:6px 14px;">Sign Out</button>
+      <div class="admin-brand">
+        <span class="brand-dot" style="width:6px;height:6px;background:var(--accent);border-radius:50%;box-shadow:0 0 6px var(--accent);flex-shrink:0;"></span>
+        privy<span>messages</span>
+      </div>
+      <div class="admin-header-right">
+        <span class="admin-badge">⚡ admin</span>
+        <button class="admin-logout-btn" onclick="logout()">Sign Out</button>
       </div>
     </div>
 
@@ -39,9 +43,9 @@
         <div class="table-wrap">
           <div class="table-title">
             <span>Registered Users</span>
-            <input class="search-filter" id="userSearch" placeholder="search username..." oninput="filterUsers()">
+            <input class="search-filter" id="userSearch" placeholder="Search username..." oninput="filterUsers()">
           </div>
-          <div id="usersTableWrap">
+          <div class="table-scroll-wrap" id="usersTableWrap">
             <div class="loading">loading users...</div>
           </div>
         </div>
@@ -52,9 +56,9 @@
         <div class="table-wrap">
           <div class="table-title">
             <span>All Messages <span class="lock-icon">[decrypted]</span></span>
-            <input class="search-filter" id="msgSearch" placeholder="search messages..." oninput="filterMessages()">
+            <input class="search-filter" id="msgSearch" placeholder="Search messages..." oninput="filterMessages()">
           </div>
-          <div id="msgsTableWrap">
+          <div class="table-scroll-wrap" id="msgsTableWrap">
             <div class="loading">loading messages...</div>
           </div>
         </div>
