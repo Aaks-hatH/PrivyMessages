@@ -7,12 +7,22 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <div class="app-layout">
+  <!-- Mobile sidebar overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <div class="app-layout" id="appLayout">
+
     <!-- Sidebar -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div class="brand">privy<span>messages</span></div>
-        <div class="current-user" id="currentUsername"></div>
+        <div class="sidebar-brand-wrap">
+          <div class="brand">
+            <span class="brand-dot"></span>
+            privy<span>messages</span>
+          </div>
+          <div class="current-user" id="currentUsername"></div>
+        </div>
+        <button class="sidebar-close-btn" onclick="closeSidebar()" aria-label="Close menu">✕</button>
       </div>
       <div class="sidebar-section">Users</div>
       <div class="user-list" id="userList">
@@ -24,28 +34,49 @@
     </div>
 
     <!-- Chat area -->
-    <div class="chat-area" id="chatArea">
+    <div class="chat-area">
+
+      <!-- Header — always visible, content changes -->
+      <div class="chat-header" id="chatHeader">
+        <!-- Hamburger for mobile (shown when no chat selected) -->
+        <button class="hamburger-btn" id="hamburgerBtn" onclick="openSidebar()" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+        <!-- Back button for mobile (shown when chat active) -->
+        <button class="back-btn" id="backBtn" onclick="goBack()" aria-label="Back to users">←</button>
+
+        <!-- Avatar + info (hidden until chat selected) -->
+        <div class="chat-header-avatar" id="chatAvatar" style="display:none"></div>
+        <div class="chat-header-info" id="chatHeaderInfo" style="display:none">
+          <span class="chat-header-name" id="chatHeaderName"></span>
+          <span class="chat-header-status" id="chatHeaderStatus">offline</span>
+        </div>
+        <span class="chat-header-enc" id="chatHeaderEnc" style="display:none">🔒 e2e encrypted</span>
+
+        <!-- Brand shown in header when no chat (desktop) -->
+        <div class="brand" id="headerBrand" style="display:none">
+          <span class="brand-dot"></span>
+          privy<span>messages</span>
+        </div>
+      </div>
+
+      <!-- No chat state -->
       <div class="no-chat" id="noChat">
-        <div class="no-chat-icon"></div>
-        <p>select a user to start messaging</p>
-        <p style="font-size:10px; opacity:0.4;">messages are end-to-end encrypted</p>
+        <div class="no-chat-icon">🔒</div>
+        <div class="no-chat-title">Select a conversation</div>
+        <div class="no-chat-sub">messages are end-to-end encrypted</div>
       </div>
 
       <!-- Active chat -->
       <div id="activeChat" style="display:none; flex-direction:column; overflow:hidden; flex:1;">
-        <div class="chat-header">
-          <div class="user-avatar" id="chatAvatar" style="width:32px;height:32px;flex-shrink:0;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--text-mid);text-transform:uppercase;"></div>
-          <div>
-            <div class="chat-header-name" id="chatHeaderName"></div>
-            <div class="chat-header-status" id="chatHeaderStatus">offline</div>
-          </div>
-        </div>
         <div class="messages-container" id="messagesContainer"></div>
         <div class="chat-input-area">
-          <textarea class="chat-input" id="chatInput" placeholder="Type a message..." rows="1" onkeydown="handleInputKey(event)"></textarea>
+          <textarea class="chat-input" id="chatInput" placeholder="Type a message..." rows="1"
+            onkeydown="handleInputKey(event)"></textarea>
           <button class="send-btn" onclick="sendMessage()" id="sendBtn">Send</button>
         </div>
       </div>
+
     </div>
   </div>
 
