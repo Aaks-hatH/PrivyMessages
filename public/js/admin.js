@@ -27,6 +27,7 @@ function switchTab(tab) {
 }
 
 // ─── USERS ───
+
 async function loadUsers() {
   try {
     const res = await apiFetch('/api/admin/users');
@@ -40,8 +41,7 @@ async function loadUsers() {
 
 function filterUsers() {
   const q = document.getElementById('userSearch').value.toLowerCase();
-  const filtered = allUsers.filter(u => u.username.includes(q));
-  renderUsersTable(filtered);
+  renderUsersTable(allUsers.filter(u => u.username.toLowerCase().includes(q)));
 }
 
 function renderUsersTable(users) {
@@ -56,8 +56,8 @@ function renderUsersTable(users) {
         <tr>
           <th>Username</th>
           <th>Role</th>
-          <th>Msgs Sent</th>
-          <th>Msgs Received</th>
+          <th>Sent</th>
+          <th>Received</th>
           <th>Joined</th>
           <th>Action</th>
         </tr>
@@ -66,13 +66,12 @@ function renderUsersTable(users) {
         ${users.map(u => `
           <tr>
             <td style="font-family:var(--mono)">@ ${u.username}</td>
-            <td>${u.isAdmin ? '<span class="admin-tag">admin</span>' : '<span style="color:var(--text-dim);font-size:12px;">user</span>'}</td>
-            <td style="font-family:var(--mono);color:var(--text-mid)">${u.messagesSent}</td>
-            <td style="font-family:var(--mono);color:var(--text-mid)">${u.messagesReceived}</td>
-            <td style="color:var(--text-dim);font-size:12px;font-family:var(--mono)">${new Date(u.createdAt).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'})}</td>
+            <td>${u.isAdmin ? '<span class="admin-tag">admin</span>' : '<span style="color:var(--text-dim);font-size:11px;font-family:var(--mono)">user</span>'}</td>
+            <td style="font-family:var(--mono);color:var(--text-mid)">${u.messagesSent ?? '—'}</td>
+            <td style="font-family:var(--mono);color:var(--text-mid)">${u.messagesReceived ?? '—'}</td>
+            <td style="color:var(--text-dim);font-size:12px;font-family:var(--mono);white-space:nowrap">${new Date(u.createdAt).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'})}</td>
             <td>${u.isAdmin ? '' : `<button class="btn btn-danger" onclick="deleteUser('${u._id}', '${u.username}')">Delete</button>`}</td>
-          </tr>
-        `).join('')}
+          </tr>`).join('')}
       </tbody>
     </table>`;
 }
@@ -81,16 +80,12 @@ async function deleteUser(id, username) {
   if (!confirm(`Delete user "@${username}" and all their messages? This cannot be undone.`)) return;
   try {
     const res = await apiFetch(`/api/admin/users/${id}`, { method: 'DELETE' });
-    if (res.ok) {
-      await loadUsers();
-      allMessages = []; // reset so messages reload
-    }
-  } catch (e) {
-    alert('Error deleting user');
-  }
+    if (res.ok) { await loadUsers(); allMessages = []; }
+  } catch (e) { alert('Error deleting user'); }
 }
 
 // ─── MESSAGES ───
+
 async function loadMessages() {
   try {
     const res = await apiFetch('/api/admin/messages');
@@ -104,10 +99,9 @@ async function loadMessages() {
 
 function filterMessages() {
   const q = document.getElementById('msgSearch').value.toLowerCase();
-  const filtered = allMessages.filter(m =>
-    m.from.includes(q) || m.to.includes(q) || m.content.toLowerCase().includes(q)
-  );
-  renderMessagesTable(filtered);
+  renderMessagesTable(allMessages.filter(m =>
+    m.from.toLowerCase().includes(q) || m.to.toLowerCase().includes(q) || m.content.toLowerCase().includes(q)
+  ));
 }
 
 function renderMessagesTable(messages) {
@@ -134,9 +128,8 @@ function renderMessagesTable(messages) {
             <td style="font-family:var(--mono);white-space:nowrap">@ ${escapeHtml(m.to)}</td>
             <td class="msg-content-cell">${escapeHtml(m.content)}</td>
             <td style="color:var(--text-dim);font-size:11px;font-family:var(--mono);white-space:nowrap">${new Date(m.createdAt).toLocaleString('en-US', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
-            <td><button class="btn btn-danger" onclick="deleteMessage('${m._id}')">Delete</button></td>
-          </tr>
-        `).join('')}
+            <td><button class="btn btn-danger" onclick="deleteMessage('${m._id}')">Del</button></td>
+          </tr>`).join('')}
       </tbody>
     </table>`;
 }
@@ -150,16 +143,11 @@ async function deleteMessage(id) {
       document.getElementById('statMessages').textContent = allMessages.length;
       filterMessages();
     }
-  } catch (e) {
-    alert('Error deleting message');
-  }
+  } catch (e) { alert('Error deleting message'); }
 }
 
 function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function logout() {
@@ -168,5 +156,4 @@ function logout() {
   window.location.href = '/';
 }
 
-// Init
 loadUsers();
