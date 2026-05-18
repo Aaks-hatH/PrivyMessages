@@ -1,8 +1,15 @@
-// Auth guard
+// Auth guard — halt execution immediately if session is invalid
 const token = localStorage.getItem('pm_token');
 const currentUser = JSON.parse(localStorage.getItem('pm_user') || 'null');
-if (!token || !currentUser) window.location.href = '/';
-if (currentUser && currentUser.isAdmin) window.location.href = '/admin.html';
+
+if (!token || !currentUser) {
+  window.location.href = '/';
+  throw new Error('Not authenticated');
+}
+if (currentUser.isAdmin) {
+  window.location.href = '/admin.html';
+  throw new Error('Admin user');
+}
 
 // State
 let selectedUserId = null;
@@ -55,7 +62,9 @@ async function loadUsers() {
     allUsers = await res.json();
     renderUserList();
   } catch (e) {
-    document.getElementById('userList').innerHTML = '<div class="loading">error loading users</div>';
+    if (e.message !== 'Session expired') {
+      document.getElementById('userList').innerHTML = '<div class="loading">error loading users</div>';
+    }
   }
 }
 
@@ -111,7 +120,9 @@ async function selectUser(userId, username) {
     const messages = await res.json();
     renderMessages(messages);
   } catch (e) {
-    document.getElementById('messagesContainer').innerHTML = '<div class="loading">error loading messages</div>';
+    if (e.message !== 'Session expired') {
+      document.getElementById('messagesContainer').innerHTML = '<div class="loading">error loading messages</div>';
+    }
   }
 
   document.getElementById('chatInput').focus();
@@ -189,8 +200,10 @@ async function sendMessage() {
     appendMessage(msg, true);
     scrollToBottom();
   } catch (e) {
-    input.value = content;
-    alert('Failed to send message: ' + e.message);
+    if (e.message !== 'Session expired') {
+      input.value = content;
+      alert('Failed to send message: ' + e.message);
+    }
   }
 
   btn.disabled = false;
@@ -222,9 +235,9 @@ function logout() {
   window.location.href = '/';
 }
 
-// Helper: fetch with auth header
+// Helper: fetch with auth header — redirects to login on 401 (expired/invalid token)
 async function apiFetch(url, options = {}) {
-  return fetch(url, {
+  const res = await fetch(url, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -232,6 +245,14 @@ async function apiFetch(url, options = {}) {
       ...(options.headers || {})
     }
   });
+  if (res.status === 401) {
+    localStorage.removeItem('pm_token');
+    localStorage.removeItem('pm_user');
+    if (socket) socket.disconnect();
+    window.location.href = '/';
+    throw new Error('Session expired');
+  }
+  return res;
 }
 
 function escapeHtml(str) {
