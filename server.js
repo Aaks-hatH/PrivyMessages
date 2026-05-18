@@ -33,8 +33,9 @@ async function createAdminIfNotExists() {
   if (!existing) {
     const hashed = await bcrypt.hash(adminPassword, 10);
     await User.create({ username: adminUsername, password: hashed, isAdmin: true });
-    console.log(`✓ Admin created — username: "${adminUsername}" password: "${adminPassword}"`);
-    console.log('  Change ADMIN_PASSWORD in .env before going live!');
+    // Do not log the password — check your .env for the value you set
+    console.log(`✓ Admin account created — username: "${adminUsername}"`);
+    console.log('  Set ADMIN_PASSWORD in .env before going live!');
   }
 }
 
@@ -84,5 +85,5 @@ app.set('onlineUsers', onlineUsers);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`\n🔒 PrivyMessages running → http://localhost:${PORT}\n`);
+  console.log(`\nPrivyMessages running -> http://localhost:${PORT}\n`);
 });
